@@ -60,7 +60,66 @@ After cleaning, the dataset contains 196320 team-level observations representing
 
 ### Univariate Analysis
 
+We permformed univariate analysis on the occurance of either side in the dataset
 
+<iframe
+  src="assets/side-counts.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+This bar plot shows the number of team-level observations for the Blue and Red sides in the dataset is equal. This is expected since each professional match contributes one Blue-side and one Red-side observation.
+
+We also plot a graph for the dirstribution of team gold at the 10 minutes (`goldat10`) in the data set.
+
+<iframe
+  src="assets/side-counts.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+The histogram is mostly normal, but slightly skewed to the right, meaning the data is well-behaved. These higher values can be interpreted as early advantages gained through successful skirmishes, objective control, or lane dominance. This shape is reasonable in a competitive setting like professional League of Legends, where early-game gold tends to be relatively stable across most matches, but occasionally diverges when early fights or strategic advantages create larger-than-average leads.
+
+### Bivariate Analysis
+
+We permformed bivariate analysis on the side and result statistic in the database to visualize how the winrates of both sides.
+
+<iframe
+  src="assets/win-rate-by-side.html"
+  width="800"
+  height="600"
+  frameborder="0"
+><\iframe>
+
+As shown in the bar plot, the Blue side has around a 53.2% winrate. This corresponds to a 3.2% deviation from an equal 50–50 split. This suggests that Blue side teams win slightly more often in the observed data. This pattern is consistent with the hypothesis that Blue side may confer a competitive advantage, though further statistical testing is needed to determine whether this difference is statistically significant.
+
+We also performed a bivariate analysis on the gold differential at 10 miuntes for winning and losing teams.
+
+<iframe
+  src="assets/gold-diff-at-10-by-result.html"
+  width="800"
+  height="600"
+  frameborder="0"
+><\iframe>
+
+The box and whisker plots show that winning teams tend to have higher 10-minute gold differences compared to losing teams, which is consistent with the idea that early-game advantages are associated with match success in professional League of Legends. However, there is noticeable overlap between the two distributions, indicating that a small positive gold differential at 10 minutes is not sufficient on its own to reliably predict a win. This reflects the fact that early-game gold differences are often still relatively small at this stage of the game, and outcomes can still change significantly in later phases.
+
+### Interesting Aggregate
+
+Here are some intersting aggregates to invest within the data set.
+
+| side   |   win_rate |   goldat10 |   xpat10 |   csat10 |   golddiffat10 |   xpdiffat10 |   csdiffat10 |
+|:-------|-----------:|-----------:|---------:|---------:|---------------:|-------------:|-------------:|
+| Blue   |      0.532 |    15712.8 |  18474.8 |  315.499 |        110.259 |       47.279 |         1.31 |
+| Red    |      0.468 |    15602.5 |  18427.5 |  314.189 |       -110.259 |      -47.279 |        -1.31 |
+
+The table compares average early-game statistics and win rates between Blue and Red sides. We observe that Blue side has a higher average win rate (0.532 vs 0.468), consistent with earlier visualizations suggesting a modest advantage for Blue side teams.
+
+In addition, Blue side teams tend to have slightly higher early-game resource values, including gold, experience, and creep score at 10 minutes. The corresponding “difference” features reflect this directly, with Blue side showing positive average differentials and Red side showing symmetric negative values, as expected from the paired structure of match data.
+
+Overall, this table reinforces the pattern that Blue side teams perform slightly better on average in both early-game metrics and match outcomes, though the magnitude of the differences in early-game statistics is relatively small.
 
 ## Assessment of Missingness
 
