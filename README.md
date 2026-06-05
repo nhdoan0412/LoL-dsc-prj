@@ -137,7 +137,7 @@ First, we test whether the missingness of `firstherald` depend on `league`?
 
 **Alternative Hypothesis:** The distribution of `league` is different when `firstherald` is missing compared to when it is not missing.
 
-The observed statistic for this permutation test is 0.8494627571515647 and a p-value of 0.0.
+The observed statistic for this permutation test is 0.9925847457627119 and a p-value of 0.0.
 
 <iframe
   src="assets/missingness-league-test.html"
@@ -186,7 +186,7 @@ Below is a histogram of the distribution of our test statistics during the hypot
   frameborder="0"
 ></iframe>
 
-We have an observed Blue-side win rate of 0.5317339038304808, which also gives us an observed test statistic of 0.0317339038304808. The p-value from the simulation is approximately 0 (extremely small), indicating that such an extreme result is very unlikely under the null hypothesis.
+We have an observed Blue-side win rate of 0.5247825045893527, which also gives us an observed test statistic of 0.0247825045893527. The p-value from the simulation is approximately 0 (extremely small), indicating that such an extreme result is very unlikely under the null hypothesis.
 
 Since the p-value is lower than the significance level of 0.05, we reject the null hypothesis. There is statistically significant evidence that Blue-side teams win more than would be expected under a fair 50% win rate model.
 
@@ -194,23 +194,25 @@ Since the p-value is lower than the significance level of 0.05, we reject the nu
 
 Our prediction problem is:
 
-**Can we predict whether a team wins a professional League of Legends match using information available at 10 minutes?**
+**Can we predict whether a team wins professional League of Legends match using information available at 10 minutes?**
 
 The response variable is `result`, where a value of 1 indicates a win and a value of 0 indicates a loss. This is a binary classification problem because there are only two possible outcomes: win or loss. We chose this prediction problem because early-game advantages are often important indicators of match outcomes in professional League of Legends. Predicting the winner using only information available at 10 minutes allows us to investigate how much predictive power early-game performance has before many major game-defining events occur.
 
 To avoid data leakage, we only use information that would be known at approximately 10 minutes into a match. The features used in our models are `side`, `league`, `goldat10`, `xpat10`, `csat10`, `golddiffat10`, `xpdiffat10`, and `csdiffat10`. These variables capture a team's resources and relative advantages during the early stages of the game. We do not use final match statistics such as total `kills`, `dragons`, `barons`, `towers`, or other post-game information because those values would not be available at the time the prediction is made. Below is the head of the dataframe we will be using:
 
-|   index | side   | league   |   goldat10 |   xpat10 |   csat10 |   golddiffat10 |   xpdiffat10 |   csdiffat10 |   result |
-|--------:|:-------|:---------|-----------:|---------:|---------:|---------------:|-------------:|-------------:|---------:|
-|  935458 | Blue   | LRN      |      15644 |    19408 |      332 |          -1093 |         -345 |            3 |        1 |
-|  935459 | Red    | LRN      |      16737 |    19753 |      329 |           1093 |          345 |           -3 |        0 |
-|  935470 | Blue   | LRN      |      17602 |    19720 |      317 |           2796 |          877 |          -20 |        1 |
-|  935471 | Red    | LRN      |      14806 |    18843 |      337 |          -2796 |         -877 |           20 |        0 |
-|  935482 | Blue   | LRN      |      18276 |    19811 |      321 |           3575 |         1752 |           24 |        0 |
+| side   | league   |   goldat10 |   xpat10 |   csat10 |   golddiffat10 |   xpdiffat10 |   csdiffat10 |   result |
+|:-------|:---------|-----------:|---------:|---------:|---------------:|-------------:|-------------:|---------:|
+| Blue   | LCKC     |      16218 |    18213 |      322 |           1523 |          137 |           -8 |        0 |
+| Red    | LCKC     |      14695 |    18076 |      330 |          -1523 |         -137 |            8 |        1 |
+| Blue   | LCKC     |      14939 |    17462 |      317 |          -1619 |        -1586 |          -27 |        0 |
+| Red    | LCKC     |      16558 |    19048 |      344 |           1619 |         1586 |           27 |        1 |
+| Blue   | LPL      |        nan |      nan |      nan |            nan |          nan |          nan |        1 |
 
 For computational efficiency, we restrict the modeling dataset to matches played during 2025. After filtering the data, our modeling dataset contains 20306 observations. We split the data into training and testing sets, using 75% of the observations for training and 25% for testing. We evaluate our models primarily using accuracy. Since the dataset is perfectly balanced, with equal numbers of wins and losses, accuracy provides an intuitive measure of how often the model correctly predicts match outcomes. We also report precision, recall, and F1-score in later sections to provide additional insight into model performance, but accuracy is our primary evaluation metric because class imbalance is not a significant concern in this prediction task.
 
 ## Baseline Model
+
+Compared to random guessing on a balanced dataset, which would achieve approximately 50% accuracy, the baseline model performs noticeably better. This suggests that early-game information contains meaningful predictive signal regarding match outcomes. However, the model is far from perfectly accurate, which is expected because many important events that influence the outcome of a match occur after the 10-minute mark. Therefore, while the baseline model provides a useful starting point, there is still substantial room for improvement through additional features and model tuning.
 
 Our baseline model is a Logistic Regression classifier that uses simple early-game information available at approximately 10 minutes into a match.
 
@@ -218,14 +220,16 @@ The model uses four features:
 - Quantitative features: `goldat10`, `xpat10`, and `csat10`
 - Nominal feature: `side`
 
-To prepare the data, the quantitative features were median-imputed to handle missing values and then standardized using StandardScaler. The nominal feature `side` was imputed using the most frequent value and then one-hot encoded. All preprocessing steps and model training were implemented within a single sklearn Pipeline.
+For the quantitative features, we first impute missing values using the median and then standardize the features using StandardScaler. We use median imputation because it is robust to outliers and allows us to retain observations with missing values. For the nominal feature side, we impute missing values using the most frequent category and then apply one-hot encoding so that the model can work with categorical data. All preprocessing steps and model training are implemented in a single sklearn Pipeline.
 
-The model was evaluated on the held-out test set and achieved the following performance:
+The baseline model achieved the following performance on the test set:
 
-Accuracy: 0.637
-Precision: 0.637
-Recall: 0.638
-F1-score: 0.637
+Accuracy: __
+Precision: __
+Recall: __
+F1-score: __
+
+Compared to random guessing on a balanced dataset, which would achieve approximately 50% accuracy, the baseline model performs noticeably better. This suggests that early-game information contains meaningful predictive signal regarding match outcomes. However, the model is far from perfectly accurate, which is expected because many important events that influence the outcome of a match occur after the 10-minute mark. Therefore, while the baseline model provides a useful starting point, there is still substantial room for improvement through additional features and model tuning.
 
 ## Final Model
 
