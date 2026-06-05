@@ -74,7 +74,7 @@ This bar plot shows the number of team-level observations for the Blue and Red s
 We also plot a graph for the dirstribution of team gold at the 10 minutes (`goldat10`) in the data set.
 
 <iframe
-  src="assets/side-counts.html"
+  src="assets/gold-at-10-distribution.html"
   width="800"
   height="600"
   frameborder="0"
@@ -91,7 +91,7 @@ We permformed bivariate analysis on the side and result statistic in the databas
   width="800"
   height="600"
   frameborder="0"
-><\iframe>
+></iframe>>
 
 As shown in the bar plot, the Blue side has around a 53.2% winrate. This corresponds to a 3.2% deviation from an equal 50–50 split. This suggests that Blue side teams win slightly more often in the observed data. This pattern is consistent with the hypothesis that Blue side may confer a competitive advantage, though further statistical testing is needed to determine whether this difference is statistically significant.
 
@@ -102,7 +102,7 @@ We also performed a bivariate analysis on the gold differential at 10 miuntes fo
   width="800"
   height="600"
   frameborder="0"
-><\iframe>
+></iframe>
 
 The box and whisker plots show that winning teams tend to have higher 10-minute gold differences compared to losing teams, which is consistent with the idea that early-game advantages are associated with match success in professional League of Legends. However, there is noticeable overlap between the two distributions, indicating that a small positive gold differential at 10 minutes is not sufficient on its own to reliably predict a win. This reflects the fact that early-game gold differences are often still relatively small at this stage of the game, and outcomes can still change significantly in later phases.
 
