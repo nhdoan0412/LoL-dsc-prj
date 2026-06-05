@@ -6,13 +6,13 @@ Authors: Nhan Doan, Sean Liu
 
 ### General Introduction
 
-League of Legends (LoL) is a popular Multiplayer Online Battle Arena (MOBA) game developed by Riot Games. It has become one of the largest video games worldwide and supports a highly competitive professional esports scene. The dataset used in this project is sourced from Oracle’s Elixir and contains professional match data from 2014 through 2026. The 2026 game data is snapshot on May 21st, 2026, meaning games after this date were not included.
+League of Legends (LoL) is a popular Multiplayer Online Battle Arena (MOBA) game developed by Riot Games. It has become one of the largest video games worldwide and supports a highly competitive professional esports scene. The dataset used in this project is sourced from Oracle’s Elixir and contains professional match data from 2014 through 2026. The we will be using the recorded match data from professional League of Legends esports matches throughout 2022.
 
 ### Dataset Size
 
-The raw dataset contains approximately 1177920 rows of professional League of Legends match data from Oracle’s Elixir. Each match consists of up to 12 rows, corresponding to 10 player entries and 2 team entries (one per side), which corresponds to 98160 matches.
+The raw dataset contains 150348 rows of professional League of Legends match data from Oracle’s Elixir. Each actual esports match consists of up to 12 rows, corresponding to 10 player entries and 2 team entries (one per side) for that game.
 
-After filtering to retain only team level observations (Blue and Red sides) and removing invalid or incomplete entries, the final dataset contains 196320 rows, representing both teams for each match (2 rows per game).
+After filtering to retain only team level observations (Blue and Red sides) and removing invalid or incomplete entries, the final dataset contains 25058 rows, representing both teams for each match (2 rows per game).
 
 ### Research Question
 
@@ -48,13 +48,13 @@ We also created two derived variables: `result_label`, which converts match outc
 
 After cleaning, the dataset contains 196320 team-level observations representing both sides of 98160 professional matches.
 
-| gameid   | league   | side   |   result |   goldat10 |   xpat10 |   csat10 |   golddiffat10 |   xpdiffat10 |   csdiffat10 |
-|:---------|:---------|:-------|---------:|-----------:|---------:|---------:|---------------:|-------------:|-------------:|
-| TRLH3/33 | EU LCS   | Blue   |        1 |      13851 |    17193 |      245 |           -119 |         -463 |           -4 |
-| TRLH3/33 | EU LCS   | Red    |        0 |      13970 |    17656 |      249 |            119 |          463 |            4 |
-| TRLH3/44 | EU LCS   | Blue   |        1 |      13792 |    18711 |      263 |           -179 |         -458 |            7 |
-| TRLH3/44 | EU LCS   | Red    |        0 |      13971 |    19169 |      256 |            179 |          458 |           -7 |
-| TRLH3/76 | EU LCS   | Blue   |        0 |      13923 |    18814 |      291 |            847 |         1271 |           22 |
+| gameid                | league   | side   |   result |   goldat10 |   xpat10 |   csat10 |   golddiffat10 |   xpdiffat10 |   csdiffat10 |
+|:----------------------|:---------|:-------|---------:|-----------:|---------:|---------:|---------------:|-------------:|-------------:|
+| ESPORTSTMNT01_2690210 | LCKC     | Blue   |        0 |      16218 |    18213 |      322 |           1523 |          137 |           -8 |
+| ESPORTSTMNT01_2690210 | LCKC     | Red    |        1 |      14695 |    18076 |      330 |          -1523 |         -137 |            8 |
+| ESPORTSTMNT01_2690219 | LCKC     | Blue   |        0 |      14939 |    17462 |      317 |          -1619 |        -1586 |          -27 |
+| ESPORTSTMNT01_2690219 | LCKC     | Red    |        1 |      16558 |    19048 |      344 |           1619 |         1586 |           27 |
+| 8401-8401_game_1      | LPL      | Blue   |        1 |        nan |      nan |      nan |            nan |          nan |          nan |
 
 *Note: The DataFrame above is not the full DataFrame. Only the first 5 rows are shown for reference.
 
@@ -112,10 +112,10 @@ Here are some intersting aggregates to invest within the data set.
 
 | side   |   win_rate |   goldat10 |   xpat10 |   csat10 |   golddiffat10 |   xpdiffat10 |   csdiffat10 |
 |:-------|-----------:|-----------:|---------:|---------:|---------------:|-------------:|-------------:|
-| Blue   |      0.532 |    15712.8 |  18474.8 |  315.499 |        110.259 |       47.279 |         1.31 |
-| Red    |      0.468 |    15602.5 |  18427.5 |  314.189 |       -110.259 |      -47.279 |        -1.31 |
+| Blue   |      0.525 |    15733.2 |  18211.9 |  314.679 |         88.156 |       24.639 |        0.344 |
+| Red    |      0.475 |    15645   |  18187.2 |  314.335 |        -88.156 |      -24.639 |       -0.344 |
 
-The table compares average early-game statistics and win rates between Blue and Red sides. We observe that Blue side has a higher average win rate (0.532 vs 0.468), consistent with earlier visualizations suggesting a modest advantage for Blue side teams.
+The table compares average early-game statistics and win rates between Blue and Red sides. We observe that Blue side has a higher average win rate (0.525 vs 0.475), consistent with earlier visualizations suggesting a modest advantage for Blue side teams.
 
 In addition, Blue side teams tend to have slightly higher early-game resource values, including gold, experience, and creep score at 10 minutes. The corresponding “difference” features reflect this directly, with Blue side showing positive average differentials and Red side showing symmetric negative values, as expected from the paired structure of match data.
 
@@ -211,6 +211,21 @@ To avoid data leakage, we only use information that would be known at approximat
 For computational efficiency, we restrict the modeling dataset to matches played during 2025. After filtering the data, our modeling dataset contains 20306 observations. We split the data into training and testing sets, using 75% of the observations for training and 25% for testing. We evaluate our models primarily using accuracy. Since the dataset is perfectly balanced, with equal numbers of wins and losses, accuracy provides an intuitive measure of how often the model correctly predicts match outcomes. We also report precision, recall, and F1-score in later sections to provide additional insight into model performance, but accuracy is our primary evaluation metric because class imbalance is not a significant concern in this prediction task.
 
 ## Baseline Model
+
+Our baseline model is a Logistic Regression classifier that uses simple early-game information available at approximately 10 minutes into a match.
+
+The model uses four features:
+- Quantitative features: `goldat10`, `xpat10`, and `csat10`
+- Nominal feature: `side`
+
+To prepare the data, the quantitative features were median-imputed to handle missing values and then standardized using StandardScaler. The nominal feature `side` was imputed using the most frequent value and then one-hot encoded. All preprocessing steps and model training were implemented within a single sklearn Pipeline.
+
+The model was evaluated on the held-out test set and achieved the following performance:
+
+Accuracy: 0.637
+Precision: 0.637
+Recall: 0.638
+F1-score: 0.637
 
 ## Final Model
 
