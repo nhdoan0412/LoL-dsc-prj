@@ -192,9 +192,15 @@ Since the p-value is lower than the significance level of 0.05, we reject the nu
 
 ## Framing a Prediction Problem
 
-### Prediction Problem
+Our prediction problem is:
 
-I plan to predict whether a team wins or loses a match using team-level in-game statistics. This is a binary classification problem because the target column, result, represents either a win or a loss.
+**Can we predict whether a team wins a professional League of Legends match using information available at 10 minutes?**
+
+The response variable is `result`, where a value of 1 indicates a win and a value of 0 indicates a loss. This is a binary classification problem because there are only two possible outcomes: win or loss. We chose this prediction problem because early-game advantages are often important indicators of match outcomes in professional League of Legends. Predicting the winner using only information available at 10 minutes allows us to investigate how much predictive power early-game performance has before many major game-defining events occur.
+
+To avoid data leakage, we only use information that would be known at approximately 10 minutes into a match. The features used in our models are `side`, `league`, `goldat10`, `xpat10`, `csat10`, `golddiffat10`, `xpdiffat10`, and `csdiffat10`. These variables capture a team's resources and relative advantages during the early stages of the game. We do not use final match statistics such as total `kills`, `dragons`, `barons`, `towers`, or other post-game information because those values would not be available at the time the prediction is made.
+
+For computational efficiency, we restrict the modeling dataset to matches played during 2025. After filtering the data, our modeling dataset contains 20306 observations. We split the data into training and testing sets, using 75% of the observations for training and 25% for testing. We evaluate our models primarily using accuracy. Since the dataset is perfectly balanced, with equal numbers of wins and losses, accuracy provides an intuitive measure of how often the model correctly predicts match outcomes. We also report precision, recall, and F1-score in later sections to provide additional insight into model performance, but accuracy is our primary evaluation metric because class imbalance is not a significant concern in this prediction task.
 
 ## Baseline Model
 
