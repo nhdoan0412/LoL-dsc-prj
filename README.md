@@ -6,7 +6,7 @@ Authors: Nhan Doan, Sean Liu
 
 ### General Introduction
 
-League of Legends (LoL) is a popular Multiplayer Online Battle Arena (MOBA) game developed by Riot Games. It has become one of the largest video games worldwide and supports a highly competitive professional esports scene. The dataset used in this project is sourced from Oracle’s Elixir and contains professional match data from 2014 through 2026.
+League of Legends (LoL) is a popular Multiplayer Online Battle Arena (MOBA) game developed by Riot Games. It has become one of the largest video games worldwide and supports a highly competitive professional esports scene. The dataset used in this project is sourced from Oracle’s Elixir and contains professional match data from 2014 through 2026. The 2026 game data is snapshot on May 21st, 2026, meaning games after this date were not included.
 
 ### Dataset Size
 
