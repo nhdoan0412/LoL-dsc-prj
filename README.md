@@ -27,10 +27,7 @@ Understanding whether Blue side confers a competitive advantage is important for
 We focus on the following variables:
 - gameid: unique identifier for each match
 - league: professional league where the match was played
-- date: match date
 - side: whether the team played on Blue or Red side
-- teamname: name of the professional team
-- position: indicates team-level vs player-level row
 - result: match outcome (1 = win, 0 = loss)
 - goldat10: team gold at 10 minutes into a game
 - xpat10: team experience at 10 minutes into a game
@@ -40,6 +37,30 @@ We focus on the following variables:
 - csdiffat10: team creep score differential at 10 minutes in a game
 
 ## Data Cleaning and Exploratory Data Analysis
+
+### Data Cleaning
+
+The Oracle's Elixir dataset contains both player-level and team-level observations. Since our research question concerns whether Blue side provides an advantage at the match level, we first filtered the dataset to retain only rows where `position == "team"`. This ensures that each observation represents a team's overall performance in a match rather than an individual player's statistics.
+
+We then removed observations whose side was not recorded as either Blue or Red and removed rows whose match result was not recorded as either a win (`1`) or loss (`0`). These filtering steps ensure that all observations correspond to completed professional matches with clearly defined outcomes.
+
+We also created two derived variables: `result_label`, which converts match outcomes from numerical values into the more interpretable labels "Win" and "Loss", and `is_blue`, a binary indicator that equals 1 when a team played on Blue side and 0 otherwise. These derived variables simplify later visualization and modeling tasks.
+
+After cleaning, the dataset contains 196320 team-level observations representing both sides of 98160 professional matches.
+
+| gameid   | league   | side   |   result |   goldat10 |   xpat10 |   csat10 |   golddiffat10 |   xpdiffat10 |   csdiffat10 |
+|:---------|:---------|:-------|---------:|-----------:|---------:|---------:|---------------:|-------------:|-------------:|
+| TRLH3/33 | EU LCS   | Blue   |        1 |      13851 |    17193 |      245 |           -119 |         -463 |           -4 |
+| TRLH3/33 | EU LCS   | Red    |        0 |      13970 |    17656 |      249 |            119 |          463 |            4 |
+| TRLH3/44 | EU LCS   | Blue   |        1 |      13792 |    18711 |      263 |           -179 |         -458 |            7 |
+| TRLH3/44 | EU LCS   | Red    |        0 |      13971 |    19169 |      256 |            179 |          458 |           -7 |
+| TRLH3/76 | EU LCS   | Blue   |        0 |      13923 |    18814 |      291 |            847 |         1271 |           22 |
+
+*Note: The DataFrame above is not the full DataFrame. Only the first 5 rows are shown for reference.
+
+### Univariate Analysis
+
+
 
 ## Assessment of Missingness
 
