@@ -123,6 +123,48 @@ Overall, this table reinforces the pattern that Blue side teams perform slightly
 
 ## Assessment of Missingness
 
+### NMAR Analysis
+
+We believe that no column in this dataset is clearly NMAR, but some missingness patterns may appear NMAR at first glance. For example, missing values in first herald-related gameplay statistics may seem dependent on the quality or completeness of match tracking, which is not directly observed in the dataset. However, this missingness is more likely MAR, because it could be explained by additional observed metadata such as match tracking source, tournament coverage level, or patch version. If we had access to metadata such as whether a match was fully recorded, broadcasted, or processed by a specific data provider, we could better explain the missingness mechanism and potentially convert this from “apparently NMAR” to MAR.
+
+### Missingness Dependency
+
+To test for missingness dependency in our dataset, we selected the `firstherald` column for analysis. We then examined whether its missingness depends on `league` and `side` using permutation tests. The hypotheses for each test are below. The significance level we choose for both permutation tests is 0.05, and the test statistic is Total Variance Distance (TVD).
+
+First: does missingness of `firstherald` depend on `league`?
+
+**Null Hypothesis:** The distribution of `league` is the same when `firstherald` is missing and when it is not missing.
+
+**Alternative Hypothesis:** The distribution of `league` is different when `firstherald` is missing compared to when it is not missing.
+
+The observed statistic for this permutation test is 0.8494627571515647 and a p-value of 0.0.
+
+<iframe
+  src="assets/missingness-league-test.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Since the p-value is below the selected 0.05 significance level, we reject the null hypothesis. Thus, the missingness of `firstherald` depends on the `league` column.
+
+Second: does missingness of `firstherald` depend on `side`?
+
+**Null Hypothesis:** The distribution of `side` is the same when `firstherald` is missing and when it is not missing.
+
+**Alternative Hypothesis:** The distribution of `side` is different when `firstherald` is missing compared to when it is not missing.
+
+The observed statistic for this permutation test is 0.0 and a p-value of 1.0.
+
+<iframe
+  src="assets/missingness-side-test.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Since the p-value is above the selected 0.05 significance level, we fail to reject the null hypothesis. Thus, there is no evidence that the missingness of `firstherald` depends on the `side` column.
+
 ## Hypothesis Testing
 
 ## Framing a Prediction Problem
