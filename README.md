@@ -131,7 +131,7 @@ We believe that no column in this dataset is clearly NMAR, but some missingness 
 
 To test for missingness dependency in our dataset, we selected the `firstherald` column for analysis. We then examined whether its missingness depends on `league` and `side` using permutation tests. The hypotheses for each test are below. The significance level we choose for both permutation tests is 0.05, and the test statistic is Total Variance Distance (TVD).
 
-First: does missingness of `firstherald` depend on `league`?
+First, we test whether the missingness of `firstherald` depend on `league`?
 
 **Null Hypothesis:** The distribution of `league` is the same when `firstherald` is missing and when it is not missing.
 
@@ -148,7 +148,7 @@ The observed statistic for this permutation test is 0.8494627571515647 and a p-v
 
 Since the p-value is below the selected 0.05 significance level, we reject the null hypothesis. Thus, the missingness of `firstherald` depends on the `league` column.
 
-Second: does missingness of `firstherald` depend on `side`?
+Second, we test whether the missingness of `firstherald` depend on `side`?
 
 **Null Hypothesis:** The distribution of `side` is the same when `firstherald` is missing and when it is not missing.
 
@@ -166,6 +166,29 @@ The observed statistic for this permutation test is 0.0 and a p-value of 1.0.
 Since the p-value is above the selected 0.05 significance level, we fail to reject the null hypothesis. Thus, there is no evidence that the missingness of `firstherald` depends on the `side` column.
 
 ## Hypothesis Testing
+
+We investigate whether Blue-side teams win more often than would be expected under a fair 50/50 model.
+
+**Null Hypothesis:** Blue-side teams win 50% of games on average.
+
+**Alternative Hypothesis:** Blue-side teams win more than 50% of games on average.
+
+**Test Statistic:** Blue-side win rate minus 0.5
+
+**Significance Level:** 0.05
+
+Below is a histogram of the distribution of our test statistics during the hypothesis test
+
+<iframe
+  src="assets/blue-side-hypothesis-test.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+We have an observed Blue-side win rate of 0.5317339038304808, which also gives us an observed test statistic of 0.0317339038304808. The p-value from the simulation is approximately 0 (extremely small), indicating that such an extreme result is very unlikely under the null hypothesis.
+
+Since the p-value is lower than the significance level of 0.05, we reject the null hypothesis. There is statistically significant evidence that Blue-side teams win more than would be expected under a fair 50% win rate model.
 
 ## Framing a Prediction Problem
 
