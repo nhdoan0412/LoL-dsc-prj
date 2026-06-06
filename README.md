@@ -224,13 +224,89 @@ For the quantitative features, we first impute missing values using the median a
 
 The baseline model achieved the following performance on the test set:
 
-Accuracy: __
-Precision: __
-Recall: __
-F1-score: __
+| Metric | Value |
+|:--------|--------------------:|
+| Accuracy | 0.6262368337057134 |
+| Precision | 0.6262368337057134 |
+| Recall | 0.6176188956271944 |
+| F1-Score | 0.6229877656149388 |
+
+<iframe
+  src="assets/baseline-confusion-matrix.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
 Compared to random guessing on a balanced dataset, which would achieve approximately 50% accuracy, the baseline model performs noticeably better. This suggests that early-game information contains meaningful predictive signal regarding match outcomes. However, the model is far from perfectly accurate, which is expected because many important events that influence the outcome of a match occur after the 10-minute mark. Therefore, while the baseline model provides a useful starting point, there is still substantial room for improvement through additional features and model tuning.
 
 ## Final Model
 
+For our final model, we expanded upon the baseline model by incorporating additional early-game information and engineering new features that better capture a team's relative advantage over its opponent. We also replaced Logistic Regression with a Random Forest classifier to allow the model to capture nonlinear relationships between early-game performance and match outcomes.
+
+The final model uses the following features:
+- Quantitative features: `goldat10`, `xpat10`, `csat10`, `golddiffat10`, `xpdiffat10`, and `csdiffat10`
+- Nominal features: `side` and `league`
+
+In addition, we engineered three new features:
+- `overall_resource_at10`: which combines gold, experience, and creep score at 10 minutes.
+- `overall_diff_at10`: which combines gold, experience, and creep score differentials at 10 minutes.
+- `positive_gold_diff`: which indicates whether a team was ahead in gold at the 10-minute mark.
+
+These engineered features were chosen because League of Legends is fundamentally a game of resource accumulation and relative advantages. While raw gold, experience, and creep score provide information about a team's overall strength, the corresponding differential statistics more directly capture whether a team is outperforming its opponent. The engineered features summarize these relationships and provide the model with a more complete view of early-game advantages.
+
+All preprocessing, feature engineering, and model training were implemented within a single sklearn Pipeline. Quantitative features were median-imputed to handle missing values, while nominal features were imputed using the most frequent category and one-hot encoded.
+
+To improve model performance, we used GridSearchCV with 5-fold cross-validation to tune the Random Forest hyperparameters. We searched over the number of trees (`n_estimators`), maximum tree depth (`max_depth`), and minimum samples per leaf (`min_samples_leaf`). These hyperparameters control the complexity of the model and help balance predictive performance against overfitting. The best-performing hyperparameters were:
+
+- n_estimators = 100
+- max_depth = 8
+- min_samples_leaf = 10
+
+The final model achieved the following performance on the test set:
+
+| Model                        |   Accuracy |   Precision |   Recall |     F1 |
+|:-----------------------------|-----------:|------------:|---------:|-------:|
+| Baseline Logistic Regression |     0.6262 |      0.6285 |   0.6176 | 0.6230  |
+| Final Random Forest          |     0.6666 |      0.6676 |   0.6636 | 0.6656 |
+
+<iframe
+  src="assets/final-confusion-matrix.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+The final model improved upon the baseline model across every evaluation metric. Accuracy increased from approximately 62.6% to 66.7%, while precision, recall, and F1-score also improved. This suggests that incorporating opponent-relative statistics and engineered resource-based features provides additional predictive information beyond the raw early-game statistics used in the baseline model. The Random Forest classifier was also able to capture nonlinear relationships that the baseline Logistic Regression model could not represent.
+
 ## Fairness Analysis
+
+We evaluate whether our final model performs differently for Blue-side and Red-side teams.
+- Group X: Blue-side teams
+- Group Y: Red-side teams
+- Evaluation metric: Accuracy (fraction of correct predictions)
+
+We choose accuracy because our dataset is balanced between the two classes (win/loss), and accuracy provides a straightforward measure of overall model correctness for each group.
+
+**Null Hypothesis**: The final model is fair with respect to side. The accuracy for Blue-side and Red-side teams is the same, and any observed differences are due to random chance.
+
+**Alternative Hypothesis**: The final model is unfair with respect to side. The accuracy for Blue-side teams differs from the accuracy for Red-side teams.
+
+**Test Statistic**： We use the absolute difference in accuracy between Blue-side and Red-side teams: |Accuracy of Blue - Accuracy of Red|
+
+**Significance Level**: 0.05
+
+### Results
+
+The observed difference in accuracy was approximately 0.0016, indicating nearly identical performance across both groups. We perform a permutation test by randomly shuffling the side labels and recomputing the test statistic under the null hypothesis. The resulting p-value is:
+- p-value = 0.907
+<iframe
+  src="assets/fairness-side-test.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+### Conclusion
+
+Since the p-value is much larger than 0.05, we fail to reject the null hypothesis. There is not enough evidence to conclude that the model performs differently for Blue-side and Red-side teams. This suggests that the model’s predictions are consistent across both groups with respect to side.
