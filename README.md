@@ -292,7 +292,7 @@ We choose accuracy because our dataset is balanced between the two classes (win/
 
 **Alternative Hypothesis**: The final model is unfair with respect to side. The accuracy for Blue-side teams differs from the accuracy for Red-side teams.
 
-**Test Statistic**： We use the absolute difference in accuracy between Blue-side and Red-side teams: |Accuracy of Blue - Accuracy of Red|
+**Test Statistic**： We use the absolute difference in accuracy between Blue-side and Red-side teams
 
 **Significance Level**: 0.05
 
