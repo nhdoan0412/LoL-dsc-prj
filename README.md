@@ -2,6 +2,23 @@
 
 Authors: Nhan Doan, Sean Liu
 
+## Project Snapshot
+
+- **Dataset:** 150,348 raw rows, representing **12,529 professional matches** after team-level cleaning.
+- **Question 1:** Is Blue side associated with a higher professional win rate in the 2022 season?
+- **Observed Blue-side win rate:** **52.48%**.
+- **Prediction task:** Predict match outcomes using only information available at approximately 10 minutes.
+- **Baseline:** Logistic Regression — **62.62% accuracy**.
+- **Final model:** Random Forest with feature engineering and GridSearchCV — **66.68% accuracy**.
+- **Evaluation design:** split by `gameid` to prevent rows from the same match appearing in both train and test sets.
+- **Additional analysis:** missingness testing and side-based fairness evaluation.
+
+### Tech Stack
+
+**Python · pandas · scikit-learn · statistical testing · feature engineering · Random Forest · GridSearchCV**
+
+---
+
 ## Introduction
 
 ### General Introduction
